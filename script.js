@@ -33,6 +33,7 @@ git$(document).ready(function() {
     $.ajax({
       url: requestUrl,
       method: 'GET',
+      contentType: 'application/json; charset=utf-8',
         success: handleDatatableRender
      });
   }
