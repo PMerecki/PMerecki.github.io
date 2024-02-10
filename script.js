@@ -1,6 +1,6 @@
 git$(document).ready(function() {
 
-  var apiRoot = 'https://4fd0c7ab-0d19-405d-9570-3ba9b818f3e3-00-133ixoqiy76lf.riker.replit.dev/v1/tasks';
+  var apiRoot = 'https://d44caa59-db77-41b2-aae3-1d60ee413a2f-00-3gju71jf2dyrh.spock.replit.dev/v1/tasks';
   var datatableRowTemplate = $('[data-datatable-row-template]').children()[0];
   var tasksContainer = $('[data-tasks-container]');
 
