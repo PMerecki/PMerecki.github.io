@@ -87,12 +87,12 @@ git$(document).ready(function() {
   var taskTitle = $(this).find('[name="title"]').val();
   var taskContent = $(this).find('[name="content"]').val();
 
-  var requestUrl = apiRoot; // Poprawka: usunięcie zbędnego znaku "/" na końcu URL
+  var requestUrl = apiRoot;
 
   $.ajax({
     url: requestUrl,
     method: 'POST',
-    contentType: 'application/json; charset=utf-8', // Dodaj nagłówek Content-Type
+    contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     data: JSON.stringify({
       title: taskTitle,
