@@ -39,30 +39,28 @@ git$(document).ready(function() {
   }
 
   function handleTaskUpdateRequest() {
-    var parentEl = $(this).parent().parent();
-    var taskId = parentEl.attr('data-task-id');
-    var taskTitle = parentEl.find('[data-task-name-input]').val();
-    var taskContent = parentEl.find('[data-task-content-input]').val();
-    var requestUrl = apiRoot;
+  var parentEl = $(this).parent().parent();
+  var taskId = parentEl.attr('data-task-id');
+  var taskTitle = parentEl.find('[data-task-name-input]').val();
+  var taskContent = parentEl.find('[data-task-content-input]').val();
+  var requestUrl = apiRoot + '/' + taskId;
 
-    $.ajax({
-      url: requestUrl,
-      method: 'PUT',
-      processData: false,
-      contentType: 'application/json; charset=utf-8',
-      dataType: 'json',
-      data: JSON.stringify({
-        id: taskId,
-        title: taskTitle,
-        content: taskContent
-      }),
-      success: function(data) {
-        parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
-        parentEl.find('[data-task-name-paragraph]').text(taskTitle);
-        parentEl.find('[data-task-content-paragraph]').text(taskContent);
-      }
-    });
-  }
+  $.ajax({
+    url: requestUrl,
+    method: 'PUT',
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    data: JSON.stringify({
+      title: taskTitle,
+      content: taskContent
+    }),
+    success: function(data) {
+      parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
+      parentEl.find('[data-task-name-paragraph]').text(taskTitle);
+      parentEl.find('[data-task-content-paragraph]').text(taskContent);
+    }
+  });
+}
 
   function handleTaskDeleteRequest() {
     var parentEl = $(this).parent().parent();
@@ -84,30 +82,29 @@ git$(document).ready(function() {
 }
 
   function handleTaskSubmitRequest(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    var taskTitle = $(this).find('[name="title"]').val();
-    var taskContent = $(this).find('[name="content"]').val();
+  var taskTitle = $(this).find('[name="title"]').val();
+  var taskContent = $(this).find('[name="content"]').val();
 
-    var requestUrl = apiRoot;
+  var requestUrl = apiRoot; // Poprawka: usunięcie zbędnego znaku "/" na końcu URL
 
-    $.ajax({
-      url: requestUrl,
-      method: 'POST',
-      processData: false,
-      contentType: 'application/json; charset=utf-8',
-      dataType: 'json',
-      data: JSON.stringify({
-        title: taskTitle,
-        content: taskContent
-      }),
-      complete: function(data) {
-        if(data.status === 200) {
-          getAllTasks();
-        }
-     }
-    });
-  }
+  $.ajax({
+    url: requestUrl,
+    method: 'POST',
+    contentType: 'application/json; charset=utf-8', // Dodaj nagłówek Content-Type
+    dataType: 'json',
+    data: JSON.stringify({
+      title: taskTitle,
+      content: taskContent
+    }),
+    complete: function(data) {
+      if(data.status === 200) {
+        getAllTasks();
+      }
+   }
+  });
+}
 
   function toggleEditingState() {
     var parentEl = $(this).parent().parent();
