@@ -1,4 +1,4 @@
-git$(document).ready(function() {
+$(document).ready(function() {
 
   var apiRoot = 'https://d44caa59-db77-41b2-aae3-1d60ee413a2f-00-3gju71jf2dyrh.spock.replit.dev/v1/tasks';
   var datatableRowTemplate = $('[data-datatable-row-template]').children()[0];
