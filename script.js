@@ -54,9 +54,7 @@ function handleTaskUpdateRequest() {
             content: taskContent
         }),
         success: function(data) {
-            // Aktualizuj ID zadania w elemencie DOM
-            parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
-            // Zaktualizuj treść zadania w elemencie DOM
+            parentEl.attr('data-task-id', data.id);
             parentEl.find('[data-task-name-paragraph]').text(taskTitle);
             parentEl.find('[data-task-content-paragraph]').text(taskContent);
         },
