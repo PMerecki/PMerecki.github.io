@@ -70,17 +70,14 @@ $(document).ready(function() {
       url: requestUrl + '/' + taskId,
       method: 'DELETE',
       success: function() {
-        parentEl.slideUp(400, function() {
-          parentEl.remove();
-        });
+        parentEl.remove();
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.error('Błąd podczas usuwania zadania:', textStatus, errorThrown);
       }
     });
   }
-
-
+  
   function handleTaskSubmitRequest(event) {
     event.preventDefault();
 
