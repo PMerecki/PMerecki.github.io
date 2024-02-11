@@ -69,7 +69,7 @@ $(document).ready(function() {
     $.ajax({
       url: requestUrl + '/' + taskId,
       method: 'DELETE',
-      success: function() {
+      success: function(data) {
         parentEl.remove();
       },
       error: function(jqXHR, textStatus, errorThrown) {
