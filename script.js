@@ -61,23 +61,25 @@ $(document).ready(function() {
     });
   }
 
-  function handleTaskDeleteRequest() {
+function handleTaskDeleteRequest() {
     var parentEl = $(this).parent().parent();
     var taskId = parentEl.attr('data-task-id');
-    var requestUrl = apiRoot;
+    var requestUrl = apiRoot + '/' + taskId;
 
     $.ajax({
-      url: requestUrl + '/' + taskId,
-      method: 'DELETE',
-      success: function(data) {
-        parentEl.remove();
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        console.error('Błąd podczas usuwania zadania:', textStatus, errorThrown);
-      }
+        url: requestUrl,
+        method: 'DELETE',
+        success: function(data) {
+            parentEl.slideUp(400, function() {
+                parentEl.remove();
+            });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Błąd podczas usuwania zadania:', textStatus, errorThrown);
+        }
     });
-  }
-  
+}
+
   function handleTaskSubmitRequest(event) {
     event.preventDefault();
 
