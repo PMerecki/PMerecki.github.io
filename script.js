@@ -64,21 +64,17 @@ $(document).ready(function() {
 function handleTaskDeleteRequest() {
     var parentEl = $(this).parent().parent();
     var taskId = parentEl.attr('data-task-id');
-    var requestUrl = apiRoot + '/' + taskId;
+    var requestUrl = apiRoot;
 
     $.ajax({
-        url: requestUrl,
-        method: 'DELETE',
-        success: function() {
-            parentEl.slideUp(400, function() {
-                parentEl.remove();
-            });
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Błąd podczas usuwania zadania:', textStatus, errorThrown);
-        }
+      url: requestUrl + '/' + taskId,
+      method: 'DELETE',
+      success: function() {
+        parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
+        parentEl.slideUp(400, function() { parentEl.remove(); });
+      }
     });
-}
+  }
 
 function handleTaskSubmitRequest(event) {
     event.preventDefault();
