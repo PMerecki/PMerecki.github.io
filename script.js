@@ -37,7 +37,7 @@ $(document).ready(function() {
     });
   }
 
-  function handleTaskUpdateRequest() {
+function handleTaskUpdateRequest() {
     var parentEl = $(this).parent().parent();
     var taskId = parentEl.attr('data-task-id');
     var taskTitle = parentEl.find('[data-task-name-input]').val();
@@ -45,21 +45,26 @@ $(document).ready(function() {
     var requestUrl = apiRoot + '/' + taskId;
 
     $.ajax({
-      url: requestUrl,
-      method: 'PUT',
-      contentType: 'application/json; charset=utf-8',
-      dataType: 'json',
-      data: JSON.stringify({
-        title: taskTitle,
-        content: taskContent
-      }),
-      success: function(data) {
-        parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
-        parentEl.find('[data-task-name-paragraph]').text(taskTitle);
-        parentEl.find('[data-task-content-paragraph]').text(taskContent);
-      }
+        url: requestUrl,
+        method: 'PUT',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        data: JSON.stringify({
+            title: taskTitle,
+            content: taskContent
+        }),
+        success: function(data) {
+            // Aktualizuj ID zadania w elemencie DOM
+            parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
+            // Zaktualizuj treść zadania w elemencie DOM
+            parentEl.find('[data-task-name-paragraph]').text(taskTitle);
+            parentEl.find('[data-task-content-paragraph]').text(taskContent);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Błąd podczas aktualizacji zadania:', textStatus, errorThrown);
+        }
     });
-  }
+}
 
 function handleTaskDeleteRequest() {
     var parentEl = $(this).parent().parent();
