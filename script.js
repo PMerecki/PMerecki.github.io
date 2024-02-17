@@ -79,71 +79,77 @@ $(document).ready(function() {
         });
     }
 
-    function handleTaskUpdateRequest() {
-        var parentEl = $(this).parents('[data-task-id]');
-        var taskId = parentEl.attr('data-task-id');
-        var taskTitle = parentEl.find('[data-task-name-input]').val();
-        var taskContent = parentEl.find('[data-task-content-input]').val();
-        var requestUrl = apiRoot;
+function handleTaskUpdateRequest() {
+    var parentEl = $(this).parent().parent();
+    var taskId = parentEl.attr('data-task-id');
+    var taskTitle = parentEl.find('[data-task-name-input]').val();
+    var taskContent = parentEl.find('[data-task-content-input]').val();
+    var requestUrl = apiRoot + '/' + taskId;
 
-        $.ajax({
-            url: requestUrl,
-            method: "PUT",
-            processData: false,
-            contentType: "application/json; charset=utf-8",
-            dataType: 'json',
-            data: JSON.stringify({
-                id: taskId,
-                title: taskTitle,
-                content: taskContent
-            }),
-            success: function(data) {
-                parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
-                parentEl.find('[data-task-name-paragraph]').text(taskTitle);
-                parentEl.find('[data-task-content-paragraph]').text(taskContent);
-            }
-        });
-    }
+    $.ajax({
+        url: requestUrl,
+        method: 'PUT',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        data: JSON.stringify({
+            title: taskTitle,
+            content: taskContent
+        }),
+        success: function(data) {
+            parentEl.attr('data-task-id', data.id);
+            parentEl.find('[data-task-name-paragraph]').text(taskTitle);
+            parentEl.find('[data-task-content-paragraph]').text(taskContent);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Błąd podczas aktualizacji zadania:', textStatus, errorThrown);
+        }
+    });
+}
 
-    function handleTaskDeleteRequest() {
-        var parentEl = $(this).parents('[data-task-id]');
-        var taskId = parentEl.attr('data-task-id');
-        var requestUrl = apiRoot;
 
-        $.ajax({
-            url: requestUrl + '/' + taskId,
-            method: 'DELETE',
-            success: function() {
-                parentEl.slideUp(400, function() { parentEl.remove(); });
-            }
-        })
-    }
+function handleTaskDeleteRequest() {
+    var parentEl = $(this).parent().parent();
+    var taskId = parentEl.attr('data-task-id');
+    var requestUrl = apiRoot + '/' + taskId;
 
-    function handleTaskSubmitRequest(event) {
-        event.preventDefault();
+    $.ajax({
+        url: requestUrl,
+        method: 'DELETE',
+        success: function() {
+            parentEl.slideUp(400, function() {
+                parentEl.remove();
+            });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Błąd podczas usuwania zadania:', textStatus, errorThrown);
+        }
+    });
+}
 
-        var taskTitle = $(this).find('[name="title"]').val();
-        var taskContent = $(this).find('[name="content"]').val();
+  function handleTaskSubmitRequest(event) {
+    event.preventDefault();
 
-        var requestUrl = apiRoot;
+    var taskTitle = $(this).find('[name="title"]').val();
+    var taskContent = $(this).find('[name="content"]').val();
 
-        $.ajax({
-            url: requestUrl,
-            method: 'POST',
-            processData: false,
-            contentType: "application/json; charset=utf-8",
-            dataType: 'json',
-            data: JSON.stringify({
-                title: taskTitle,
-                content: taskContent
-            }),
-            complete: function(data) {
-                if (data.status === 200) {
-                    getAllTasks();
-                }
-            }
-        });
-    }
+    var requestUrl = apiRoot;
+
+    $.ajax({
+      url: requestUrl,
+      method: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      data: JSON.stringify({
+        title: taskTitle,
+        content: taskContent
+      }),
+      complete: function(data) {
+        if (data.status === 200) {
+          getAllTasks();
+        }
+      }
+    });
+  }
 
     function toggleEditingState() {
         var parentEl = $(this).parents('[data-task-id]');
