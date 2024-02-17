@@ -1,6 +1,6 @@
 $(document).ready(function() {
     const apiRoot = 'https://d44caa59-db77-41b2-aae3-1d60ee413a2f-00-3gju71jf2dyrh.spock.replit.dev/v1/tasks';
-    const trelloApiRoot = 'https://api.trello.com/1/erws3?key=8b9ddbc7edd3d1217e1d516c147d1b41&token=ATT9388f689ae6cb82183179efbb0A9988AC';
+    const trelloApiRoot = 'https://api.trello.com/1/65b6252ec976ecaccd655bad?key=8b9ddbc7edd3d1217e1d516c147d1b41&token=ATTA5d576cce6f776350b168e91c503c61e31731d819388f689ae6cb82183179efbb0A9988AC';
     const datatableRowTemplate = $('[data-datatable-row-template]').children()[0];
     const $tasksContainer = $('[data-tasks-container]');
 
