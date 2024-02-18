@@ -2,7 +2,7 @@ $(document).ready(function() {
     const apiRoot = 'https://d44caa59-db77-41b2-aae3-1d60ee413a2f-00-3gju71jf2dyrh.spock.replit.dev/v1/tasks';
     const trelloApiRoot = 'https://d44caa59-db77-41b2-aae3-1d60ee413a2f-00-3gju71jf2dyrh.spock.replit.dev/v1/trello';
     const datatableRowTemplate = $('[data-datatable-row-template]').children()[0];
-    const tasksContainer = $('[data-tasks-container]');
+    const $tasksContainer = $('[data-tasks-container]');
 
     var availableBoards = {};
     var availableTasks = {};
@@ -45,20 +45,20 @@ $(document).ready(function() {
     }
 
     function handleDatatableRender(taskData, boards) {
-    tasksContainer.empty();
-    boards.forEach(board => {
-        availableBoards[board.id] = board;
-    });
+        $tasksContainer.empty();
+        boards.forEach(board => {
+            availableBoards[board.id] = board;
+        });
 
-    taskData.forEach(function(task) {
-        var $datatableRowEl = createElement(task);
-        var $availableBoardsOptionElements = prepareBoardOrListSelectOptions(boards);
+        taskData.forEach(function(task) {
+            var $datatableRowEl = createElement(task);
+            var $availableBoardsOptionElements = prepareBoardOrListSelectOptions(boards);
 
-        $datatableRowEl.find('[data-board-name-select]')
-            .append($availableBoardsOptionElements);
+            $datatableRowEl.find('[data-board-name-select]')
+                .append($availableBoardsOptionElements);
 
-        $datatableRowEl
-            .appendTo(tasksContainer);
+            $datatableRowEl
+                .appendTo($tasksContainer);
         });
     }
 
@@ -79,50 +79,45 @@ $(document).ready(function() {
         });
     }
 
-  function handleTaskUpdateRequest() {
-    var parentEl = $(this).parent().parent();
-    var taskId = parentEl.attr('data-task-id');
-    var taskTitle = parentEl.find('[data-task-name-input]').val();
-    var taskContent = parentEl.find('[data-task-content-input]').val();
-    var requestUrl = apiRoot;
+    function handleTaskUpdateRequest() {
+        var parentEl = $(this).parents('[data-task-id]');
+        var taskId = parentEl.attr('data-task-id');
+        var taskTitle = parentEl.find('[data-task-name-input]').val();
+        var taskContent = parentEl.find('[data-task-content-input]').val();
+        var requestUrl = apiRoot;
 
-    $.ajax({
-      url: requestUrl,
-      method: 'PUT',
-      processData: false,
-      contentType: 'application/json; charset=utf-8',
-      dataType: 'json',
-      data: JSON.stringify({
-        id: taskId,
-        title: taskTitle,
-        content: taskContent
-      }),
-      success: function(data) {
-        parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
-        parentEl.find('[data-task-name-paragraph]').text(taskTitle);
-        parentEl.find('[data-task-content-paragraph]').text(taskContent);
-      }
-    });
-  }
-
-  function handleTaskDeleteRequest() {
-    var parentEl = $(this).parent().parent();
-    var taskId = parentEl.attr('data-task-id');
-    var requestUrl = apiRoot + '/' + taskId;
-
-    $.ajax({
-    url: requestUrl,
-    method: 'DELETE',
-    success: function() {
-      parentEl.slideUp(400, function() {
-        parentEl.remove();
-      });
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.error('Błąd podczas usuwania zadania:', textStatus, errorThrown);
+        $.ajax({
+            url: requestUrl,
+            method: "PUT",
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: JSON.stringify({
+                id: taskId,
+                title: taskTitle,
+                content: taskContent
+            }),
+            success: function(data) {
+                parentEl.attr('data-task-id', data.id).toggleClass('datatable__row--editing');
+                parentEl.find('[data-task-name-paragraph]').text(taskTitle);
+                parentEl.find('[data-task-content-paragraph]').text(taskContent);
+            }
+        });
     }
-  });
-}
+
+    function handleTaskDeleteRequest() {
+        var parentEl = $(this).parents('[data-task-id]');
+        var taskId = parentEl.attr('data-task-id');
+        var requestUrl = apiRoot;
+
+        $.ajax({
+            url: requestUrl + '/' + taskId,
+            method: 'DELETE',
+            success: function() {
+                parentEl.slideUp(400, function() { parentEl.remove(); });
+            }
+        })
+    }
 
     function handleTaskSubmitRequest(event) {
         event.preventDefault();
@@ -136,20 +131,19 @@ $(document).ready(function() {
             url: requestUrl,
             method: 'POST',
             processData: false,
-            contentType: 'application/json; charset=utf-8',
+            contentType: "application/json; charset=utf-8",
             dataType: 'json',
             data: JSON.stringify({
                 title: taskTitle,
                 content: taskContent
             }),
             complete: function(data) {
-                if(data.status === 200) {
+                if (data.status === 200) {
                     getAllTasks();
                 }
             }
         });
     }
-
 
     function toggleEditingState() {
         var parentEl = $(this).parents('[data-task-id]');
@@ -163,17 +157,17 @@ $(document).ready(function() {
     }
 
     function handleBoardNameSelect(event) {
-        var changedSelectEl = $(event.target);
+        var $changedSelectEl = $(event.target);
         var selectedBoardId = $changedSelectEl.val();
-        var listNameSelectEl = $changedSelectEl.siblings('[data-list-name-select]');
+        var $listNameSelectEl = $changedSelectEl.siblings('[data-list-name-select]');
         var preparedListOptions = prepareBoardOrListSelectOptions(availableBoards[selectedBoardId].lists);
 
-        listNameSelectEl.empty().append(preparedListOptions);
+        $listNameSelectEl.empty().append(preparedListOptions);
     }
 
     function handleCardCreationRequest(event) {
         var requestUrl = trelloApiRoot + '/cards';
-        var relatedTaskRow = $(event.target).parents('[data-task-id]');
+        var $relatedTaskRow = $(event.target).parents('[data-task-id]');
         var relatedTaskId = $relatedTaskRow.attr('data-task-id');
         var relatedTask = availableTasks[relatedTaskId];
         var selectedListId = $relatedTaskRow.find('[data-list-name-select]').val();
@@ -203,10 +197,10 @@ $(document).ready(function() {
 
     $('[data-task-add-form]').on('submit', handleTaskSubmitRequest);
 
-    tasksContainer.on('change','[data-board-name-select]', handleBoardNameSelect);
-    tasksContainer.on('click','[data-trello-card-creation-trigger]', handleCardCreationRequest);
-    tasksContainer.on('click','[data-task-edit-button]', toggleEditingState);
-    tasksContainer.on('click','[data-task-edit-abort-button]', toggleEditingState);
-    tasksContainer.on('click','[data-task-submit-update-button]', handleTaskUpdateRequest);
-    tasksContainer.on('click','[data-task-delete-button]', handleTaskDeleteRequest);
+    $tasksContainer.on('change','[data-board-name-select]', handleBoardNameSelect);
+    $tasksContainer.on('click','[data-trello-card-creation-trigger]', handleCardCreationRequest);
+    $tasksContainer.on('click','[data-task-edit-button]', toggleEditingState);
+    $tasksContainer.on('click','[data-task-edit-abort-button]', toggleEditingState);
+    $tasksContainer.on('click','[data-task-submit-update-button]', handleTaskUpdateRequest);
+    $tasksContainer.on('click','[data-task-delete-button]', handleTaskDeleteRequest);
 });
